@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Love Animation</title>
+  <style>
+    @font-face {
+      font-family: 'Lucy Said OK';
+      src: url('fonts/LucySaidOK-Regular.ttf') format('truetype');
+    }
+
+    body {
+      background-color: #111;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: left;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .message {
+      font-family: 'Lucy Said OK', cursive;
+      font-size: 5rem;
+      color: gold;
+      display: inline-block;
+      text-align: center;
+      white-space: nowrap;
+      z-index: 1;
+      position: relative;
+    }
+
+    .letter {
+      position: absolute;
+      font-family: 'Lucy Said OK', cursive;
+      font-size: 5rem;
+      color: gold;
+      opacity: 0;
+      transition: transform 1s ease, opacity 1s ease;
+      z-index: 1;
+    }
+
+    .zoom-in {
+      transform: scale(1);
+      opacity: 1;
+      transition: transform 2s ease;
+    }
+
+    .highlight {
+      color: #ff4081;
+      text-shadow: 0 0 10px #ff4081, 0 0 20px #ff4081, 0 0 30px #ff4081;
+      font-size: 15rem;
+    }
+
+    .number-font {
+      font-family: Arial, sans-serif;
+    }
+
+    .background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 32px;
+      color: red;
+      animation: floatUp 3s linear forwards;
+    }
+
+    @keyframes floatUp {
+      0% { opacity: 1; }
+      100% {
+        opacity: 0;
+        transform: translateY(-150vh);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background" id="background"></div>
+  <div class="message" id="message"></div>
+
+  <script>
+    const messages = [
+      "May the auspicious",
+      "Sri Selva Vinayagar Subham",
+      "On the auspicious Vishvavasu year",
+      "On the 13th day",
+      "In the month of Aavani",
+      "Friday, 29th August 2025",
+      "On the Shashti Thithi",
+      "Swathi Nakshatra With Siddha yoga",
+      "In the subhayoga Subha dhinathil",
+      "Between 9 am and 10:30 am",
+      "In Libra Lagna",
+      "Kamesh Mani",
+      "weds",
+      "Rindhiya",
+      "Kamesh Mani weds Rindhiya"
+    ];
+
+    const highlightMessages = ["Kamesh Mani", "Rindhiya"];
+    let index = 0;
+
+    // Function to calculate random position
+    function getRandomPosition() {
+      const x = Math.random() * window.innerWidth;  // Random X position
+      const y = Math.random() * window.innerHeight; // Random Y position
+      return { x, y };
+    }
+
+    // Function to show the message
+    function showMessage() {
+      const container = document.getElementById("message");
+      container.classList.remove("zoom-in");
+      container.innerHTML = "";
+
+      const msg = messages[index];
+      index = (index + 1) % messages.length;
+
+      const isHighlight = highlightMessages.includes(msg);
+      const letters = [];
+
+      // Split message into individual letters and add to the container
+      msg.split("").forEach((char, i) => {
+        const span = document.createElement("span");
+        span.textContent = char;
+        span.className = "letter";
+        if (isHighlight) span.classList.add("highlight");
+        if (/\d/.test(char)) span.classList.add("number-font");
+
+        const { x, y } = getRandomPosition();
+        span.style.transform = `translate(${x}px, ${y}px)`; // Set initial random position
+        span.style.opacity = 0;
+
+        container.appendChild(span);
+        letters.push(span);
+      });
+
+      // Animate letters to their final position
+      setTimeout(() => {
+        let xOffset = 0;
+        let letterSpacing = 10;  // Reduced letter spacing
+
+        letters.forEach((letter, i) => {
+          setTimeout(() => {
+            const width = letter.offsetWidth || 40;
+            letter.style.transition = 'transform 1s ease, opacity 1s ease';
+            letter.style.transform = `translate(${xOffset}px, 0px)`; // Align letters in sequence
+            letter.style.opacity = 1;
+            xOffset += width + letterSpacing;
+          }, i * 80);  // Adjust delay for smooth effect
+        });
+      }, 100);
+
+      // Zoom in effect after a slight delay
+      setTimeout(() => {
+        container.classList.add("zoom-in");
+      }, 4000);
+    }
+
+    // Initial message
+    showMessage();
+    // Show new message every 8 seconds
+    setInterval(showMessage, 5000);
+
+    // Launch hearts animation
+    function launchHearts() {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.textContent = "❤";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.top = Math.random() * 100 + "vh";
+      document.getElementById("background").appendChild(heart);
+      setTimeout(() => heart.remove(), 3000);
+    }
+
+    setInterval(launchHearts, 300);
+  </script>
+</body>
+</html>
