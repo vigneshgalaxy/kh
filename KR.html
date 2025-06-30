@@ -3,40 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Kamesh Mani Rindhiya</title>
+  <title>Love Animation</title>
   <style>
     @font-face {
       font-family: 'Lucy Said OK';
-      src: url('LucySaidOK-Regular.ttf') format('truetype');
+      src: url('fonts/LucySaidOK-Regular.ttf') format('truetype');
     }
 
-    body {
+    html, body {
       background-color: #111;
       margin: 0;
       padding: 0;
-      display: flex;
-      justify-content: left;
-      align-items: center;
-      height: 100vh;
+      height: 100%;
       overflow: hidden;
+      font-size: 4vw; /* Base font size responsive */
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
       position: relative;
     }
 
     .message {
       font-family: 'Lucy Said OK', cursive;
-      font-size: 4rem;
+      font-size: 10vw;
       color: gold;
       display: inline-block;
       text-align: center;
       white-space: nowrap;
       z-index: 1;
       position: relative;
+      overflow-x: auto;
     }
 
     .letter {
       position: absolute;
       font-family: 'Lucy Said OK', cursive;
-      font-size: 5rem;
+      font-size: 10vw;
       color: gold;
       opacity: 0;
       transition: transform 1s ease, opacity 1s ease;
@@ -51,11 +57,8 @@
 
     .highlight {
       color: #ff4081;
-      justify-content: center;
-      align-items: center;
-      font-family: 'Lucy Said OK', cursive;
-      text-shadow: 0 0 10px #ff4081, 0 0 20px #ff4081, 0 0 30px #ff4081;
-      font-size: 13rem;
+      text-shadow: 0 0 5px #ff4081, 0 0 10px #ff4081, 0 0 15px #ff4081;
+      font-size: 18vw;
     }
 
     .number-font {
@@ -66,20 +69,22 @@
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
       z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
     }
 
     .heart {
       position: absolute;
-      font-size: 32px;
+      font-size: 5vw;
       color: red;
       animation: floatUp 3s linear forwards;
     }
 
     @keyframes floatUp {
-      0% { opacity: 1; }
+      0% { opacity: 1; transform: translateY(0); }
       100% {
         opacity: 0;
         transform: translateY(-150vh);
@@ -113,14 +118,12 @@
     const highlightMessages = ["Kamesh Mani", "Rindhiya"];
     let index = 0;
 
-    // Function to calculate random position
     function getRandomPosition() {
-      const x = Math.random() * window.innerWidth;  // Random X position
-      const y = Math.random() * window.innerHeight; // Random Y position
+      const x = Math.random() * window.innerWidth * 0.8;
+      const y = Math.random() * window.innerHeight * 0.8;
       return { x, y };
     }
 
-    // Function to show the message
     function showMessage() {
       const container = document.getElementById("message");
       container.classList.remove("zoom-in");
@@ -132,7 +135,6 @@
       const isHighlight = highlightMessages.includes(msg);
       const letters = [];
 
-      // Split message into individual letters and add to the container
       msg.split("").forEach((char, i) => {
         const span = document.createElement("span");
         span.textContent = char;
@@ -141,47 +143,42 @@
         if (/\d/.test(char)) span.classList.add("number-font");
 
         const { x, y } = getRandomPosition();
-        span.style.transform = `translate(${x}px, ${y}px)`; // Set initial random position
+        span.style.transform = `translate(${x}px, ${y}px)`;
         span.style.opacity = 0;
 
         container.appendChild(span);
         letters.push(span);
       });
 
-      // Animate letters to their final position
       setTimeout(() => {
         let xOffset = 0;
-        let letterSpacing = 10;  // Reduced letter spacing
+        let letterSpacing = 5; // Reduced spacing for mobile
 
         letters.forEach((letter, i) => {
           setTimeout(() => {
-            const width = letter.offsetWidth || 40;
+            const width = letter.offsetWidth || 20;
             letter.style.transition = 'transform 1s ease, opacity 1s ease';
-            letter.style.transform = `translate(${xOffset}px, 0px)`; // Align letters in sequence
+            letter.style.transform = `translate(${xOffset}px, 0px)`;
             letter.style.opacity = 1;
             xOffset += width + letterSpacing;
-          }, i * 80);  // Adjust delay for smooth effect
+          }, i * 80);
         });
       }, 100);
 
-      // Zoom in effect after a slight delay
       setTimeout(() => {
         container.classList.add("zoom-in");
       }, 4000);
     }
 
-    // Initial message
     showMessage();
-    // Show new message every 8 seconds
     setInterval(showMessage, 5000);
 
-    // Launch hearts animation
     function launchHearts() {
       const heart = document.createElement("div");
       heart.className = "heart";
       heart.textContent = "❤";
-      heart.style.left = Math.random() * 100 + "vw";
-      heart.style.top = Math.random() * 100 + "vh";
+      heart.style.left = Math.random() * 90 + "vw";
+      heart.style.top = Math.random() * 90 + "vh";
       document.getElementById("background").appendChild(heart);
       setTimeout(() => heart.remove(), 3000);
     }
