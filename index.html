@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>Love Animation</title>
   <style>
     @font-face {
@@ -14,9 +14,10 @@
       margin: 0;
       padding: 0;
       height: 100%;
+      width: 100%;
       background-color: #111;
-      font-size: 4vw; /* responsive base font size */
       overflow: hidden;
+      font-size: 3vw; /* smaller base for small screens */
     }
 
     body {
@@ -29,23 +30,25 @@
 
     .message {
       font-family: 'Lucy Said OK', cursive;
-      font-size: 8vw; /* responsive font size */
+      font-size: 6vw;  /* scaled down for 3" width */
       color: gold;
-      display: flex;
-      flex-wrap: wrap; /* allow wrapping */
       text-align: center;
       max-width: 90vw;
+      max-height: 80vh;
+      line-height: 1.2;
+      word-break: break-word;
+      overflow-wrap: break-word;
       z-index: 1;
       position: relative;
+      padding: 0 4vw;
     }
 
     .letter {
       font-family: 'Lucy Said OK', cursive;
-      font-size: 8vw;
+      font-size: 6vw;
       color: gold;
       opacity: 0;
       transition: transform 1s ease, opacity 1s ease;
-      z-index: 1;
       position: relative;
       display: inline-block;
     }
@@ -58,8 +61,8 @@
 
     .highlight {
       color: #ff4081;
-      text-shadow: 0 0 5px #ff4081, 0 0 10px #ff4081, 0 0 15px #ff4081;
-      font-size: 12vw;
+      text-shadow: 0 0 4px #ff4081, 0 0 8px #ff4081;
+      font-size: 8vw;
     }
 
     .number-font {
@@ -79,16 +82,16 @@
 
     .heart {
       position: absolute;
-      font-size: 6vw;
+      font-size: 5vw;
       color: red;
       animation: floatUp 3s linear forwards;
     }
 
     @keyframes floatUp {
-      0% { opacity: 1; }
+      0% { opacity: 1; transform: translateY(0); }
       100% {
         opacity: 0;
-        transform: translateY(-150vh);
+        transform: translateY(-120vh);
       }
     }
   </style>
@@ -120,8 +123,8 @@
     let index = 0;
 
     function getRandomPosition() {
-      const x = Math.random() * window.innerWidth;
-      const y = Math.random() * window.innerHeight;
+      const x = Math.random() * window.innerWidth * 0.8;
+      const y = Math.random() * window.innerHeight * 0.8;
       return { x, y };
     }
 
@@ -154,28 +157,27 @@
       setTimeout(() => {
         let xOffset = 0;
         let lineY = 0;
-        let letterSpacing = 5;
+        const maxWidth = window.innerWidth * 0.9;
 
         letters.forEach((letter, i) => {
           setTimeout(() => {
-            const width = letter.offsetWidth || 20;
+            const width = letter.offsetWidth || 12;
             letter.style.transition = 'transform 1s ease, opacity 1s ease';
             letter.style.transform = `translate(${xOffset}px, ${lineY}px)`;
             letter.style.opacity = 1;
-            xOffset += width + letterSpacing;
+            xOffset += width + 2;
 
-            // Wrap text if exceeds screen width
-            if (xOffset > window.innerWidth * 0.9) {
+            if (xOffset > maxWidth) {
               xOffset = 0;
               lineY += parseFloat(getComputedStyle(letter).fontSize) * 1.2;
             }
-          }, i * 80);
+          }, i * 70);
         });
       }, 100);
 
       setTimeout(() => {
         container.classList.add("zoom-in");
-      }, 4000);
+      }, 3500);
     }
 
     showMessage();
