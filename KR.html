@@ -11,12 +11,12 @@
     }
 
     html, body {
-      background-color: #111;
       margin: 0;
       padding: 0;
       height: 100%;
+      background-color: #111;
+      font-size: 4vw; /* responsive base font size */
       overflow: hidden;
-      font-size: 4vw; /* Base font size responsive */
     }
 
     body {
@@ -29,24 +29,25 @@
 
     .message {
       font-family: 'Lucy Said OK', cursive;
-      font-size: 10vw;
+      font-size: 8vw; /* responsive font size */
       color: gold;
-      display: inline-block;
+      display: flex;
+      flex-wrap: wrap; /* allow wrapping */
       text-align: center;
-      white-space: nowrap;
+      max-width: 90vw;
       z-index: 1;
       position: relative;
-      overflow-x: auto;
     }
 
     .letter {
-      position: absolute;
       font-family: 'Lucy Said OK', cursive;
-      font-size: 10vw;
+      font-size: 8vw;
       color: gold;
       opacity: 0;
       transition: transform 1s ease, opacity 1s ease;
       z-index: 1;
+      position: relative;
+      display: inline-block;
     }
 
     .zoom-in {
@@ -58,7 +59,7 @@
     .highlight {
       color: #ff4081;
       text-shadow: 0 0 5px #ff4081, 0 0 10px #ff4081, 0 0 15px #ff4081;
-      font-size: 18vw;
+      font-size: 12vw;
     }
 
     .number-font {
@@ -78,13 +79,13 @@
 
     .heart {
       position: absolute;
-      font-size: 5vw;
+      font-size: 6vw;
       color: red;
       animation: floatUp 3s linear forwards;
     }
 
     @keyframes floatUp {
-      0% { opacity: 1; transform: translateY(0); }
+      0% { opacity: 1; }
       100% {
         opacity: 0;
         transform: translateY(-150vh);
@@ -98,9 +99,7 @@
 
   <script>
     const messages = [
-      "May",
-      "the",
-      "auspicious",
+      "May the auspicious",
       "Sri Selva Vinayagar Subham",
       "On the auspicious Vishvavasu year",
       "On the 13th day",
@@ -121,8 +120,8 @@
     let index = 0;
 
     function getRandomPosition() {
-      const x = Math.random() * window.innerWidth * 0.8;
-      const y = Math.random() * window.innerHeight * 0.8;
+      const x = Math.random() * window.innerWidth;
+      const y = Math.random() * window.innerHeight;
       return { x, y };
     }
 
@@ -154,15 +153,22 @@
 
       setTimeout(() => {
         let xOffset = 0;
-        let letterSpacing = 5; // Reduced spacing for mobile
+        let lineY = 0;
+        let letterSpacing = 5;
 
         letters.forEach((letter, i) => {
           setTimeout(() => {
             const width = letter.offsetWidth || 20;
             letter.style.transition = 'transform 1s ease, opacity 1s ease';
-            letter.style.transform = `translate(${xOffset}px, 0px)`;
+            letter.style.transform = `translate(${xOffset}px, ${lineY}px)`;
             letter.style.opacity = 1;
             xOffset += width + letterSpacing;
+
+            // Wrap text if exceeds screen width
+            if (xOffset > window.innerWidth * 0.9) {
+              xOffset = 0;
+              lineY += parseFloat(getComputedStyle(letter).fontSize) * 1.2;
+            }
           }, i * 80);
         });
       }, 100);
